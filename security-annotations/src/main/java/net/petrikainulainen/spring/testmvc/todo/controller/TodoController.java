@@ -26,7 +26,7 @@ import java.util.Locale;
 /**
  * @author Petri Kainulainen
  */
-@Controller
+@RestController
 public class TodoController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TodoController.class);
@@ -47,7 +47,6 @@ public class TodoController {
 
 
     @RequestMapping(value = "/api/todo", method = RequestMethod.POST)
-    @ResponseBody
     public TodoDTO add(@RequestBody TodoDTO dto) throws FormValidationError {
         LOGGER.debug("Adding a new to-do entry with information: {}", dto);
 
@@ -60,7 +59,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
     public TodoDTO deleteById(@PathVariable("id") Long id) throws TodoNotFoundException {
         LOGGER.debug("Deleting a to-do entry with id: {}", id);
 
@@ -71,7 +69,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo", method = RequestMethod.GET)
-    @ResponseBody
     public List<TodoDTO> findAll() {
         LOGGER.debug("Finding all todo entries.");
 
@@ -92,7 +89,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo/{id}", method = RequestMethod.GET)
-    @ResponseBody
     public TodoDTO findById(@PathVariable("id") Long id) throws TodoNotFoundException {
         LOGGER.debug("Finding to-do entry with id: {}", id);
 
@@ -103,7 +99,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo/{id}", method = RequestMethod.PUT)
-    @ResponseBody
     public TodoDTO update(@RequestBody TodoDTO dto, @PathVariable("id") Long todoId) throws TodoNotFoundException, FormValidationError {
         LOGGER.debug("Updating a to-do entry with information: {}", dto);
 
@@ -138,7 +133,6 @@ public class TodoController {
     }
 
     @ExceptionHandler(FormValidationError.class)
-    @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public FormValidationErrorDTO handleFormValidationError(FormValidationError validationError) {
         LOGGER.debug("Handling form validation error");

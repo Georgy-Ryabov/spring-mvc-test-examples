@@ -4,7 +4,7 @@ import com.github.springtestdbunit.DbUnitTestExecutionListener;
 import com.github.springtestdbunit.annotation.DatabaseSetup;
 import com.github.springtestdbunit.annotation.ExpectedDatabase;
 import com.github.springtestdbunit.assertion.DatabaseAssertionMode;
-import net.petrikainulainen.spring.testmvc.*;
+import net.petrikainulainen.spring.testmvc.IntegrationTestUtil;
 import net.petrikainulainen.spring.testmvc.config.ExampleApplicationContext;
 import net.petrikainulainen.spring.testmvc.todo.TodoTestUtil;
 import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTO;
@@ -19,19 +19,18 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.test.web.server.MockMvc;
 import org.springframework.test.web.server.samples.context.WebContextLoader;
-import org.springframework.test.web.server.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
-import javax.sql.DataSource;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.server.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.server.samples.context.SecurityRequestPostProcessors.userDetailsService;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * This test uses the annotation based application context configuration.
@@ -57,7 +56,7 @@ public class ITTodoControllerTest {
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webApplicationContextSetup(webApplicationContext)
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .addFilter(springSecurityFilterChain)
                 .build();
     }
@@ -68,7 +67,7 @@ public class ITTodoControllerTest {
         TodoDTO added = TodoTestUtil.createDTO(null, "description", "title");
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(added))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
         )
                 .andExpect(status().isUnauthorized());
     }
@@ -79,11 +78,11 @@ public class ITTodoControllerTest {
         TodoDTO added = TodoTestUtil.createDTO(null, "description", "title");
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(added))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string("{\"id\":3,\"description\":\"description\",\"title\":\"title\"}"));
     }
 
@@ -93,7 +92,7 @@ public class ITTodoControllerTest {
         TodoDTO added = TodoTestUtil.createDTO(null, "", "");
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(added))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
         )
                 .andExpect(status().isBadRequest());
     }
@@ -104,11 +103,11 @@ public class ITTodoControllerTest {
         TodoDTO added = TodoTestUtil.createDTO(null, "", "");
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(added))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string("{\"fieldErrors\":[{\"path\":\"title\",\"message\":\"The title cannot be empty.\"}]}"));
     }
 
@@ -121,7 +120,7 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(added))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
         )
                 .andExpect(status().isBadRequest());
     }
@@ -135,11 +134,11 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(added))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(startsWith("{\"fieldErrors\":[")))
                 .andExpect(content().string(allOf(
                         containsString("{\"path\":\"description\",\"message\":\"The maximum length of the description is 500 characters.\"}"),
@@ -162,7 +161,7 @@ public class ITTodoControllerTest {
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string("{\"id\":1,\"description\":\"Lorem ipsum\",\"title\":\"Foo\"}"));
     }
 
@@ -196,7 +195,7 @@ public class ITTodoControllerTest {
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string("[{\"id\":1,\"description\":\"Lorem ipsum\",\"title\":\"Foo\"},{\"id\":2,\"description\":\"Lorem ipsum\",\"title\":\"Bar\"}]"));
     }
 
@@ -214,7 +213,7 @@ public class ITTodoControllerTest {
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string("{\"id\":1,\"description\":\"Lorem ipsum\",\"title\":\"Foo\"}"));
     }
 
@@ -241,7 +240,7 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
         )
                 .andExpect(status().isUnauthorized());
     }
@@ -253,11 +252,11 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string("{\"id\":1,\"description\":\"description\",\"title\":\"title\"}"));
     }
 
@@ -268,7 +267,7 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
         )
                 .andExpect(status().isBadRequest());
     }
@@ -280,11 +279,11 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string("{\"fieldErrors\":[{\"path\":\"title\",\"message\":\"The title cannot be empty.\"}]}"));
     }
 
@@ -298,7 +297,7 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
         )
                 .andExpect(status().isBadRequest());
     }
@@ -313,11 +312,11 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
-                .andExpect(content().mimeType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
+                .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
                 .andExpect(content().string(startsWith("{\"fieldErrors\":[")))
                 .andExpect(content().string(allOf(
                         containsString("{\"path\":\"description\",\"message\":\"The maximum length of the description is 500 characters.\"}"),
@@ -333,7 +332,7 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 3L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
         )
                 .andExpect(status().isUnauthorized());
     }
@@ -345,7 +344,7 @@ public class ITTodoControllerTest {
 
         mockMvc.perform(put("/api/todo/{id}", 3L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
-                .body(IntegrationTestUtil.convertObjectToJsonBytes(updated))
+                .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isNotFound());
