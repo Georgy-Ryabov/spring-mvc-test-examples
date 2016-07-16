@@ -7,7 +7,6 @@ import net.petrikainulainen.spring.testmvc.todo.service.TodoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -17,7 +16,7 @@ import java.util.List;
 /**
  * @author Petri Kainulainen
  */
-@Controller
+@RestController
 public class TodoController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(TodoController.class);
@@ -30,7 +29,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo", method = RequestMethod.POST)
-    @ResponseBody
     public TodoDTO add(@Valid @RequestBody TodoDTO dto) {
         LOGGER.debug("Adding a new to-do entry with information: {}", dto);
 
@@ -41,7 +39,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo/{id}", method = RequestMethod.DELETE)
-    @ResponseBody
     public TodoDTO deleteById(@PathVariable("id") Long id) throws TodoNotFoundException {
         LOGGER.debug("Deleting a to-do entry with id: {}", id);
 
@@ -52,7 +49,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo", method = RequestMethod.GET)
-    @ResponseBody
     public List<TodoDTO> findAll() {
         LOGGER.debug("Finding all todo entries.");
 
@@ -73,7 +69,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo/{id}", method = RequestMethod.GET)
-    @ResponseBody
     public TodoDTO findById(@PathVariable("id") Long id) throws TodoNotFoundException {
         LOGGER.debug("Finding to-do entry with id: {}", id);
 
@@ -84,7 +79,6 @@ public class TodoController {
     }
 
     @RequestMapping(value = "/api/todo/{id}", method = RequestMethod.PUT)
-    @ResponseBody
     public TodoDTO update(@Valid @RequestBody TodoDTO dto, @PathVariable("id") Long todoId) throws TodoNotFoundException {
         LOGGER.debug("Updating a to-do entry with information: {}", dto);
 
