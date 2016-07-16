@@ -24,23 +24,37 @@
         </repository>
     </repositories>
     <properties>
-
-        <bonecp.version>0.7.1.RELEASE</bonecp.version>
-        <h2.version>1.3.166</h2.version>
-        <hibernate.version>4.1.4.Final</hibernate.version>
-        <jackson.version>1.9.9</jackson.version>
-        <powermock.version>1.4.12</powermock.version>
-        <slf4j.version>1.6.4</slf4j.version>
-        <spring.version>3.1.2.RELEASE</spring.version>
-        <spring.data.version>1.2.0.RELEASE</spring.data.version>
-        <spring.security.version>3.1.2.RELEASE</spring.security.version>
-
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <build.profile.id>dev</build.profile.id>
         <skip.integration.tests>true</skip.integration.tests>
         <skip.unit.tests>false</skip.unit.tests>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <bonecp.version>0.8.0.RELEASE</bonecp.version>
+        <jadira.usertype.version>3.0.0.CR3</jadira.usertype.version>
+        <h2.version>1.4.192</h2.version>
+        <hibernate.version>4.3.11.Final</hibernate.version>
+        <hibernate-validator.version>4.3.2.Final</hibernate-validator.version>
+        <jackson.version>1.9.13</jackson.version>
+        <jackson-databind.version>2.8.0</jackson-databind.version>
+        <joda-time.version>2.9.4</joda-time.version>
+        <commons-lang.version>2.6</commons-lang.version>
+
+        <slf4j.version>1.6.4</slf4j.version>
+        <log4j.version>1.2.17</log4j.version>
+
+        <spring.version>4.3.1.RELEASE</spring.version>
+        <spring.data.version>1.10.2.RELEASE</spring.data.version>
+        <spring.security.version>3.1.2.RELEASE</spring.security.version>
+
+        <junit.version>4.12</junit.version>
+        <hamcrest.version>1.3</hamcrest.version>
+        <dbunit.version>2.4.8</dbunit.version>
+        <spring-test-dbunit.version>1.3.0</spring-test-dbunit.version>
+        <mockito.version>1.10.19</mockito.version>
+        <jsonpath.version>2.2.0</jsonpath.version>
+        <powermock.version>1.6.5</powermock.version>
     </properties>
+
     <profiles>
         <profile>
             <id>dev</id>
@@ -59,7 +73,7 @@
     </profiles>
 
     <build>
-        <finalName>spring-test-mvc-configuration</finalName>
+        <finalName>spring-test-mvc-security-url-based</finalName>
         <filters>
             <filter>profiles/${build.profile.id}/config.properties</filter>
         </filters>
@@ -199,6 +213,7 @@
             </plugin>
         </plugins>
     </build>
+
     <dependencies>
         <!-- Spring Framework -->
         <dependency>
@@ -267,19 +282,16 @@
             <artifactId>spring-security-web</artifactId>
             <version>${spring.security.version}</version>
         </dependency>
-        
+
+        <!-- cglib - Byte Code Generation Library is high level API to generate and transform
+        Java byte code. It is used by AOP, testing, data access frameworks to generate dynamic
+         proxy objects and intercept field access-->
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib</artifactId>
             <version>2.2.2</version>
         </dependency>
 
-        <!-- Hibernate Validator -->
-        <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>4.2.0.Final</version>
-        </dependency>
         <!-- Jackson -->
         <dependency>
             <groupId>org.codehaus.jackson</groupId>
@@ -291,12 +303,19 @@
             <artifactId>jackson-mapper-asl</artifactId>
             <version>${jackson.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson-databind.version}</version>
+        </dependency>
+
         <!-- Spring Data JPA -->
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
             <version>${spring.data.version}</version>
         </dependency>
+
         <!-- Hibernate -->
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -308,13 +327,22 @@
             <artifactId>hibernate-entitymanager</artifactId>
             <version>${hibernate.version}</version>
         </dependency>
+
+        <!-- Hibernate Validator -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate-validator.version}</version>
+        </dependency>
+
         <!-- H2 Database -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <version>${h2.version}</version>
         </dependency>
-        <!-- BoneCP -->
+
+        <!-- BoneCP: Lightweight connection pool -->
         <dependency>
             <groupId>com.jolbox</groupId>
             <artifactId>bonecp</artifactId>
@@ -353,7 +381,7 @@
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <version>${commons-lang.version}</version>
         </dependency>
 
         <!-- Logging -->
@@ -370,39 +398,39 @@
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
+            <version>${log4j.version}</version>
         </dependency>
 
         <!-- Joda -->
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
-            <version>2.1</version>
+            <version>${joda-time.version}</version>
         </dependency>
 
+        <!-- Jadira User Type -->
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.spi</artifactId>
-            <version>3.0.0.CR3</version>
+            <version>${jadira.usertype.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.jadira.usertype</groupId>
             <artifactId>usertype.core</artifactId>
-            <version>3.0.0.CR3</version>
+            <version>${jadira.usertype.version}</version>
         </dependency>
      
         <!-- TESTING DEPENDENCIES -->
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
-            <version>1.3</version>
+            <version>${hamcrest.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>${junit.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
@@ -414,7 +442,7 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-all</artifactId>
-            <version>1.9.0</version>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -452,39 +480,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-test-mvc</artifactId>
-            <version>1.0.0.M2</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <artifactId>spring-context</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-webmvc</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>spring-test</artifactId>
-                    <groupId>org.springframework</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>hamcrest-all</artifactId>
-                    <groupId>org.hamcrest</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
             <groupId>com.github.springtestdbunit</groupId>
             <artifactId>spring-test-dbunit</artifactId>
-            <version>1.0.0</version>
+            <version>${spring-test-dbunit.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.dbunit</groupId>
             <artifactId>dbunit</artifactId>
-            <version>2.4.8</version>
+            <version>${dbunit.version}</version>
             <scope>test</scope>
             <exclusions>
                 <exclusion>
