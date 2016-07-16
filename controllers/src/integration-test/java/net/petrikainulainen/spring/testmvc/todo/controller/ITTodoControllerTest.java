@@ -19,27 +19,17 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.test.web.server.MockMvc;
 import org.springframework.test.web.server.samples.context.WebContextLoader;
-import org.springframework.test.web.server.setup.MockMvcBuilders;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.hasProperty;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.nullValue;
-import static org.springframework.test.web.server.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.server.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.forwardedUrl;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.server.result.MockMvcResultMatchers.view;
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * This test uses the annotation based application context configuration.
@@ -66,7 +56,7 @@ public class ITTodoControllerTest {
 
     @Before
     public void setUp() {
-        mockMvc = MockMvcBuilders.webApplicationContextSetup(webApplicationContext)
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
                 .build();
     }
 
@@ -131,7 +121,7 @@ public class ITTodoControllerTest {
                 .param(FORM_FIELD_TITLE, "title")
                 .sessionAttr(TodoController.MODEL_ATTRIBUTE_TODO, new TodoDTO())
         )
-                .andExpect(status().isOk())
+                .andExpect(status().is(302))
                 .andExpect(view().name(expectedRedirectViewPath))
                 .andExpect(model().attribute(TodoController.PARAMETER_TODO_ID, is("3")))
                 .andExpect(flash().attribute(TodoController.FLASH_MESSAGE_KEY_FEEDBACK, is("Todo entry: title was added.")));
@@ -187,7 +177,7 @@ public class ITTodoControllerTest {
     public void deleteById() throws Exception {
         String expectedRedirectViewPath = TodoTestUtil.createRedirectViewPath(TodoController.REQUEST_MAPPING_TODO_LIST);
         mockMvc.perform(get("/todo/delete/{id}", 1L))
-                .andExpect(status().isOk())
+                .andExpect(status().is(302))
                 .andExpect(view().name(expectedRedirectViewPath))
                 .andExpect(flash().attribute(TodoController.FLASH_MESSAGE_KEY_FEEDBACK, is("Todo entry: Foo was deleted.")));
     }
@@ -274,7 +264,7 @@ public class ITTodoControllerTest {
                 .param(FORM_FIELD_TITLE, "title")
                 .sessionAttr(TodoController.MODEL_ATTRIBUTE_TODO, new TodoDTO())
         )
-                .andExpect(status().isOk())
+                .andExpect(status().is(302))
                 .andExpect(view().name(expectedRedirectViewPath))
                 .andExpect(model().attribute(TodoController.PARAMETER_TODO_ID, is("1")))
                 .andExpect(flash().attribute(TodoController.FLASH_MESSAGE_KEY_FEEDBACK, is("Todo entry: title was updated.")));

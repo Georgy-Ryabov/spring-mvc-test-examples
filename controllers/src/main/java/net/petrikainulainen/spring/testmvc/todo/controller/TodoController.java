@@ -174,9 +174,6 @@ public class TodoController {
 
 
     private String createRedirectViewPath(String requestMapping) {
-        StringBuilder redirectViewPath = new StringBuilder();
-        redirectViewPath.append("redirect:");
-        redirectViewPath.append(requestMapping);
-        return redirectViewPath.toString();
+        return "redirect:" + requestMapping;
     }
 }
