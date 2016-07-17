@@ -67,6 +67,7 @@ public class ITAuthenticationTest {
     @Test
     public void loginByUsingIncorrectRequestMethod() throws Exception {
         mockMvc.perform(get("/api/login")
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param(IntegrationTestUtil.REQUEST_PARAMETER_USERNAME, IntegrationTestUtil.CORRECT_USERNAME)
                 .param(IntegrationTestUtil.REQUEST_PARAMETER_PASSWORD, IntegrationTestUtil.CORRECT_PASSWORD)
         )

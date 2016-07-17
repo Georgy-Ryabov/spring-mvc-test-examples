@@ -80,6 +80,5 @@ public class ITAuthenticationTest {
                 .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk());
-
     }
 }

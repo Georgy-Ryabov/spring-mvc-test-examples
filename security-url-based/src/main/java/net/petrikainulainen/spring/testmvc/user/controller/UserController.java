@@ -7,10 +7,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.Collection;
@@ -19,7 +18,7 @@ import java.util.Iterator;
 /**
  * @author Petri Kainulainen
  */
-@Controller
+@RestController
 public class UserController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserController.class);
@@ -28,7 +27,6 @@ public class UserController {
     private SecurityContextUtil securityContextUtil;
 
     @RequestMapping(value = "/api/user", method = RequestMethod.GET)
-    @ResponseBody
     public UserDTO getLoggedInUser() {
         LOGGER.debug("Getting logged in user.");
         UserDetails principal = securityContextUtil.getPrincipal();
