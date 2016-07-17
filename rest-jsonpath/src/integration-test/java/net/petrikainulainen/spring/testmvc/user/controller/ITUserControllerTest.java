@@ -16,18 +16,15 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.annotation.Resource;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.server.samples.context.SecurityRequestPostProcessors.userDetailsService;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Petri Kainulainen
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ExampleApplicationContext.class})
-//@ContextConfiguration(locations = {"classpath:exampleApplicationContext.xml"})
 @WebAppConfiguration
 public class ITUserControllerTest {
 

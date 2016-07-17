@@ -180,7 +180,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
-    @ExpectedDatabase("todoData-delete-expected.xml")
+    @ExpectedDatabase("toDoData-delete-expected.xml")
     public void deleteById_TodoEntryFound_ShouldDeleteTodoEntryAndRenderTodoListView() throws Exception {
         String expectedRedirectViewPath = TestUtil.createRedirectViewPath(TodoController.REQUEST_MAPPING_TODO_LIST);
         mockMvc.perform(get("/todo/delete/{id}", 1L))

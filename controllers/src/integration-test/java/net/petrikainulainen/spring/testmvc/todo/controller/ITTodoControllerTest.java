@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
 import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
-import org.springframework.test.web.server.samples.context.WebContextLoader;
+import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -36,8 +36,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * @author Petri Kainulainen
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(loader = WebContextLoader.class, classes = {ExampleApplicationContext.class})
-//@ContextConfiguration(loader = WebContextLoader.class, locations = {"classpath:exampleApplicationContext.xml"})
+@ContextConfiguration(classes = {ExampleApplicationContext.class})
+@WebAppConfiguration
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
@@ -173,7 +173,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
-    @ExpectedDatabase("todoData-delete-expected.xml")
+    @ExpectedDatabase("toDoData-delete-expected.xml")
     public void deleteById() throws Exception {
         String expectedRedirectViewPath = TodoTestUtil.createRedirectViewPath(TodoController.REQUEST_MAPPING_TODO_LIST);
         mockMvc.perform(get("/todo/delete/{id}", 1L))

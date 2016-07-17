@@ -1,11 +1,9 @@
 package net.petrikainulainen.spring.testmvc.config;
 
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.*;
@@ -22,9 +20,6 @@ public class ExampleApplicationConfig implements WebApplicationInitializer {
     public void onStartup(ServletContext servletContext) throws ServletException {
         AnnotationConfigWebApplicationContext rootContext = new AnnotationConfigWebApplicationContext();
         rootContext.register(ExampleApplicationContext.class);
-
-        //XmlWebApplicationContext rootContext = new XmlWebApplicationContext();
-        //rootContext.setConfigLocation("classpath:exampleApplicationContext.xml");
 
         ServletRegistration.Dynamic dispatcher = servletContext.addServlet(DISPATCHER_SERVLET_NAME, new DispatcherServlet(rootContext));
         dispatcher.setLoadOnStartup(1);
