@@ -1,8 +1,8 @@
 package net.petrikainulainen.spring.testmvc.todo.controller;
 
+import net.petrikainulainen.spring.testmvc.config.TestContext;
 import net.petrikainulainen.spring.testmvc.config.WebAppContext;
 import net.petrikainulainen.spring.testmvc.todo.TestUtil;
-import net.petrikainulainen.spring.testmvc.config.TestContext;
 import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTO;
 import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTOBuilder;
 import net.petrikainulainen.spring.testmvc.todo.exception.TodoNotFoundException;
@@ -25,16 +25,12 @@ import org.springframework.web.context.WebApplicationContext;
 import java.util.Arrays;
 
 import static junit.framework.Assert.assertNull;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
  * @author Petri Kainulainen

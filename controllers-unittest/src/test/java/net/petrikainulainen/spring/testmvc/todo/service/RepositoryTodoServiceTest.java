@@ -1,8 +1,7 @@
 package net.petrikainulainen.spring.testmvc.todo.service;
 
-import net.petrikainulainen.spring.testmvc.todo.TestUtil;
-import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTOBuilder;
 import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTO;
+import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTOBuilder;
 import net.petrikainulainen.spring.testmvc.todo.exception.TodoNotFoundException;
 import net.petrikainulainen.spring.testmvc.todo.model.Todo;
 import net.petrikainulainen.spring.testmvc.todo.model.TodoBuilder;

@@ -1,6 +1,5 @@
 package net.petrikainulainen.spring.testmvc.todo.service;
 
-import net.petrikainulainen.spring.testmvc.todo.TestUtil;
 import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTO;
 import net.petrikainulainen.spring.testmvc.todo.dto.TodoDTOBuilder;
 import net.petrikainulainen.spring.testmvc.todo.exception.TodoNotFoundException;
@@ -10,12 +9,10 @@ import net.petrikainulainen.spring.testmvc.todo.repository.TodoRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
-import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertNull;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;

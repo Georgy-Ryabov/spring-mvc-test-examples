@@ -1,11 +1,9 @@
 package net.petrikainulainen.spring.testmvc.config;
 
 import org.sitemesh.config.ConfigurableSiteMeshFilter;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
 import javax.servlet.*;

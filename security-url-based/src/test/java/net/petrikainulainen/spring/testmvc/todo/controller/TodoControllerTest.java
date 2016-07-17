@@ -21,7 +21,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.validation.Validator;
 
 import javax.annotation.Resource;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;

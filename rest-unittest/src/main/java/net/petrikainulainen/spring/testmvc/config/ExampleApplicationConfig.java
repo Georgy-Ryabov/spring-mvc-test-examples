@@ -1,14 +1,13 @@
 package net.petrikainulainen.spring.testmvc.config;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.context.support.XmlWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.servlet.*;
-import java.util.EnumSet;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 
 /**
  * @author Petri Kainulainen

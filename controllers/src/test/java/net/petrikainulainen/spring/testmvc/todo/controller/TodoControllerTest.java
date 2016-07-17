@@ -29,9 +29,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertNull;
-import static junit.framework.Assert.assertTrue;
+import static junit.framework.Assert.*;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
