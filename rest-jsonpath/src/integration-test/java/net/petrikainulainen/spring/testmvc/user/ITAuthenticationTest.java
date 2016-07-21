@@ -6,7 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.http.MediaType;
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import javax.annotation.Resource;
 
-import static org.springframework.test.web.server.samples.context.SecurityRequestPostProcessors.userDetailsService;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -27,10 +27,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = {ExampleApplicationContext.class})
 @WebAppConfiguration
+@WithUserDetails
 public class ITAuthenticationTest {
-
-    @Resource
-    private FilterChainProxy springSecurityFilterChain;
 
     @Resource
     private WebApplicationContext webApplicationContext;
@@ -40,7 +38,7 @@ public class ITAuthenticationTest {
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .addFilter(springSecurityFilterChain)
+                .apply(springSecurity())
                 .build();
     }
 
@@ -65,18 +63,8 @@ public class ITAuthenticationTest {
     }
 
     @Test
-    public void loginByUsingIncorrectRequestMethod() throws Exception {
-        mockMvc.perform(get("/api/login")
-                .param(IntegrationTestUtil.REQUEST_PARAMETER_USERNAME, IntegrationTestUtil.CORRECT_USERNAME)
-                .param(IntegrationTestUtil.REQUEST_PARAMETER_PASSWORD, IntegrationTestUtil.CORRECT_PASSWORD)
-        )
-                .andExpect(status().isUnauthorized());
-    }
-
-    @Test
     public void logout() throws Exception {
         mockMvc.perform(get("/api/logout")
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk());
     }

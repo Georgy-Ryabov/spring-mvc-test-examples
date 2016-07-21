@@ -12,6 +12,9 @@ import net.petrikainulainen.spring.testmvc.todo.model.Todo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.security.web.FilterChainProxy;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -27,7 +30,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.annotation.Resource;
 
 import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.server.samples.context.SecurityRequestPostProcessors.userDetailsService;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -41,8 +44,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestExecutionListeners({ DependencyInjectionTestExecutionListener.class,
         DirtiesContextTestExecutionListener.class,
         TransactionalTestExecutionListener.class,
-        DbUnitTestExecutionListener.class })
+        DbUnitTestExecutionListener.class,
+        WithSecurityContextTestExecutionListener.class})
 @DatabaseSetup("toDoData.xml")
+@WithUserDetails
 public class ITTodoControllerTest {
 
     @Resource
@@ -56,11 +61,12 @@ public class ITTodoControllerTest {
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .addFilter(springSecurityFilterChain)
+                .apply(springSecurity())
                 .build();
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void addAsAnonymous() throws Exception {
         TodoDTO added = TodoTestUtil.createDTO(null, "description", "title");
@@ -78,7 +84,6 @@ public class ITTodoControllerTest {
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
                 .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -105,7 +110,6 @@ public class ITTodoControllerTest {
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
                 .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -138,7 +142,6 @@ public class ITTodoControllerTest {
         mockMvc.perform(post("/api/todo")
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
                 .content(IntegrationTestUtil.convertObjectToJsonBytes(added))
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -151,6 +154,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void deleteByIdAsAnonymous() throws Exception {
         mockMvc.perform(delete("/api/todo/{id}", 1L))
@@ -161,7 +165,6 @@ public class ITTodoControllerTest {
     @ExpectedDatabase("toDoData-delete-expected.xml")
     public void deleteByIdAsUser() throws Exception {
         mockMvc.perform(delete("/api/todo/{id}", 1L)
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -171,6 +174,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void deleteByIdWhenTodoIsNotFoundAsAnonymous() throws Exception {
         mockMvc.perform(delete("/api/todo/{id}", 3L))
@@ -181,12 +185,12 @@ public class ITTodoControllerTest {
     @ExpectedDatabase("toDoData.xml")
     public void deleteByIdWhenTodoIsNotFoundAsUser() throws Exception {
         mockMvc.perform(delete("/api/todo/{id}", 3L)
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void findAllAsAnonymous() throws Exception {
         mockMvc.perform(get("/api/todo"))
@@ -197,7 +201,6 @@ public class ITTodoControllerTest {
     @ExpectedDatabase("toDoData.xml")
     public void findAllAsUser() throws Exception {
         mockMvc.perform(get("/api/todo")
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -211,6 +214,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void findByIdAsAnonymous() throws Exception {
         mockMvc.perform(get("/api/todo/{id}", 1L))
@@ -221,7 +225,6 @@ public class ITTodoControllerTest {
     @ExpectedDatabase("toDoData.xml")
     public void findByIdAsUser() throws Exception {
         mockMvc.perform(get("/api/todo/{id}", 1L)
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -231,6 +234,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void findByIdWhenTodoIsNotFoundAsAnonymous() throws Exception {
         mockMvc.perform(get("/api/todo/{id}", 3L))
@@ -241,12 +245,12 @@ public class ITTodoControllerTest {
     @ExpectedDatabase("toDoData.xml")
     public void findByIdWhenTodoIsNotFoundAsUser() throws Exception {
         mockMvc.perform(get("/api/todo/{id}", 3L)
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isNotFound());
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase(value="toDoData.xml")
     public void updateAsAnonymous() throws Exception {
         TodoDTO updated = TodoTestUtil.createDTO(1L, "description", "title");
@@ -266,7 +270,6 @@ public class ITTodoControllerTest {
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
                 .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -276,6 +279,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void updateEmptyTodoAsAnonymous() throws Exception {
         TodoDTO updated = TodoTestUtil.createDTO(1L, "", "");
@@ -295,7 +299,6 @@ public class ITTodoControllerTest {
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
                 .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -305,6 +308,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void updateTodoWhenTitleAndDescriptionAreTooLongAsAnonymous() throws Exception {
         String title = TodoTestUtil.createStringWithLength(Todo.MAX_LENGTH_TITLE + 1);
@@ -330,7 +334,6 @@ public class ITTodoControllerTest {
         mockMvc.perform(put("/api/todo/{id}", 1L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
                 .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isBadRequest())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
@@ -343,6 +346,7 @@ public class ITTodoControllerTest {
     }
 
     @Test
+    @WithAnonymousUser
     @ExpectedDatabase("toDoData.xml")
     public void updateTodoWhenTodoIsNotFoundAsAnonymous() throws Exception {
         TodoDTO updated = TodoTestUtil.createDTO(3L, "description", "title");
@@ -362,7 +366,6 @@ public class ITTodoControllerTest {
         mockMvc.perform(put("/api/todo/{id}", 3L)
                 .contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8)
                 .content(IntegrationTestUtil.convertObjectToJsonBytes(updated))
-                .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isNotFound());
     }

@@ -23,8 +23,7 @@ import org.springframework.web.servlet.view.JstlView;
         "net.petrikainulainen.spring.testmvc.security",
         "net.petrikainulainen.spring.testmvc.user.controller"
 })
-@Import({PersistenceContext.class})
-@ImportResource("classpath:exampleApplicationContext-security.xml")
+@Import({PersistenceContext.class, SecurityContext.class})
 @PropertySource("classpath:application.properties")
 public class ExampleApplicationContext extends WebMvcConfigurerAdapter {
 

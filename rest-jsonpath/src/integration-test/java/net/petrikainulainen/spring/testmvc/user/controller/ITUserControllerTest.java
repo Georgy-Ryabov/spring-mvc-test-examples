@@ -5,7 +5,8 @@ import net.petrikainulainen.spring.testmvc.config.ExampleApplicationContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.security.web.FilterChainProxy;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -16,7 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 import javax.annotation.Resource;
 
 import static org.hamcrest.Matchers.is;
-import static org.springframework.test.web.server.samples.context.SecurityRequestPostProcessors.userDetailsService;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -29,9 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ITUserControllerTest {
 
     @Resource
-    private FilterChainProxy springSecurityFilterChain;
-
-    @Resource
     private WebApplicationContext webApplicationContext;
 
     private MockMvc mockMvc;
@@ -39,11 +37,12 @@ public class ITUserControllerTest {
     @Before
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext)
-                .addFilter(springSecurityFilterChain)
+                .apply(springSecurity())
                 .build();
     }
 
     @Test
+    @WithAnonymousUser
     public void getLoggedInUserAsAnonymous() throws Exception {
         mockMvc.perform(get("/api/user"))
                 .andExpect(status().isOk())
@@ -51,9 +50,9 @@ public class ITUserControllerTest {
     }
 
     @Test
+    @WithUserDetails
     public void getLoggedInUserAsUser() throws Exception {
         mockMvc.perform(get("/api/user")
-            .with(userDetailsService(IntegrationTestUtil.CORRECT_USERNAME))
         )
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(IntegrationTestUtil.APPLICATION_JSON_UTF8))
